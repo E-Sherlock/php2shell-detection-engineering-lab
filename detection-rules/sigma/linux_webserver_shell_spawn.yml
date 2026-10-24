@@ -1,0 +1,40 @@
+---
+
+###  2. `detection-rules/sigma/linux_webserver_shell_spawn.yml`
+*(Paste this into `detection-rules/sigma/linux_webserver_shell_spawn.yml`)*
+
+```yaml
+title: Web Server Spawning Interactive Shell (PHP2Shell Post-Exploitation)
+id: f83a1b02-7a8e-491a-89bc-6a2e8c0490bf
+status: experimental
+description: Detects web server processes (php-fpm, apache2, nginx, httpd) spawning interactive command shells, indicating potential Remote Code Execution (RCE) via CVE-2026-109618/CVE-2026-109619.
+references:
+    - https://nvd.nist.gov/vuln/detail/CVE-2026-109618
+author: Mohamed Lahouar (@E-Sherlock)
+date: 2026-10-24
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1505.003
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_parent:
+        Image|endswith:
+            - '/php-fpm'
+            - '/apache2'
+            - '/httpd'
+            - '/nginx'
+    selection_child:
+        Image|endswith:
+            - '/bin/sh'
+            - '/bin/bash'
+            - '/bin/dash'
+            - '/usr/bin/python3'
+            - '/usr/bin/perl'
+            - '/usr/bin/nc'
+    condition: selection_parent and selection_child
+falsepositives:
+    - Misconfigured administrative cron tasks running directly via php-cli (verify runtime user and invocation parameters).
+level: critical

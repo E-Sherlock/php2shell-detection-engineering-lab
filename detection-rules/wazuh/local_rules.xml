@@ -1,0 +1,20 @@
+<group name="linux,process_creation,php2shell_detection,">
+  <!-- Base Rule: Monitor Linux Auditd Execve Events -->
+  <rule id="100300" level="3">
+    <if_sid>60106</if_sid>
+    <field name="audit.type">EXECVE</field>
+    <description>Auditd: Process execution detected on Linux host.</description>
+  </rule>
+
+  <!-- Critical Rule: Web Worker Spawning Command Shell -->
+  <rule id="100301" level="12">
+    <if_sid>100300</if_sid>
+    <field name="audit.parent_exe">^/usr/sbin/php-fpm|^/usr/sbin/apache2|^/usr/sbin/nginx|^/usr/sbin/httpd</field>
+    <field name="audit.exe">^/usr/bin/bash$|^/usr/bin/sh$|^/usr/bin/python3$|^/usr/bin/perl$|^/usr/bin/nc$</field>
+    <description>CRITICAL: Potential PHP2Shell RCE - Web server process spawned an interactive shell binary (%$(audit.exe)%).</description>
+    <mitre>
+      <id>T1059.004</id>
+      <id>T1505.003</id>
+    </mitre>
+  </rule>
+</group>

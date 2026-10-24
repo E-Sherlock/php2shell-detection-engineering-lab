@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-10-24T17:42:01.102+0000",
+  "rule": {
+    "id": "100301",
+    "level": 12,
+    "description": "CRITICAL: Potential PHP2Shell RCE - Web server process spawned an interactive shell binary (/usr/bin/bash).",
+    "mitre": {
+      "id": ["T1059.004", "T1505.003"],
+      "tactic": ["Execution", "Persistence"],
+      "technique": ["Unix Shell", "Web Shell"]
+    },
+    "groups": ["linux", "process_creation", "php2shell_detection"]
+  },
+  "agent": {
+    "id": "002",
+    "name": "prod-web-server-01",
+    "ip": "10.0.4.15"
+  },
+  "data": {
+    "audit": {
+      "type": "EXECVE",
+      "pid": "14092",
+      "ppid": "2104",
+      "exe": "/usr/bin/bash",
+      "parent_exe": "/usr/sbin/php-fpm",
+      "cwd": "/var/www/html",
+      "type_name": "EXECVE"
+    }
+  }
+}
